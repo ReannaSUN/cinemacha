@@ -7,7 +7,6 @@ export async function GET() {
     const rows = await sql<{
       id: string
       name: string
-      player_token: string | null
       score: number
       correct: number
       total: number
@@ -18,7 +17,6 @@ export async function GET() {
     }>(
       `select s.id::text as id,
               p.name,
-              p.player_token,
               s.score,
               s.correct,
               s.total,
@@ -38,7 +36,6 @@ export async function GET() {
         entries: rows.map((r) => ({
           id: r.id,
           name: r.name,
-          playerId: r.player_token ?? undefined,
           score: r.score,
           correct: r.correct,
           total: r.total,

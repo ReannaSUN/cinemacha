@@ -35,7 +35,7 @@ export async function POST(request: Request) {
           row.id,
         ])
       }
-      return Response.json({ ok: true, name: row.name, playerId: playerToken })
+      return Response.json({ ok: true, name: row.name })
     }
 
     // Free name — also clear this token's previous name if renaming
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
       key,
       playerToken,
     ])
-    return Response.json({ ok: true, name, playerId: playerToken })
+    return Response.json({ ok: true, name })
   } catch (error) {
     const msg = error instanceof Error ? error.message : ''
     if (msg.includes('unique') || msg.includes('duplicate')) {

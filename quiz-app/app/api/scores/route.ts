@@ -80,7 +80,6 @@ export async function POST(request: Request) {
     const board = await sql<{
       id: string
       name: string
-      player_token: string | null
       score: number
       correct: number
       total: number
@@ -89,7 +88,7 @@ export async function POST(request: Request) {
       rank_label: string
       created_at: string
     }>(
-      `select s.id::text as id, p.name, p.player_token, s.score, s.correct, s.total, s.percent,
+      `select s.id::text as id, p.name, s.score, s.correct, s.total, s.percent,
               s.best_streak, s.rank_label, s.created_at::text as created_at
        from scores s
        join players p on p.id = s.player_id
@@ -103,7 +102,6 @@ export async function POST(request: Request) {
       entries: board.map((r) => ({
         id: r.id,
         name: r.name,
-        playerId: r.player_token ?? undefined,
         score: r.score,
         correct: r.correct,
         total: r.total,
