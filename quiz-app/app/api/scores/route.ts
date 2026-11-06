@@ -1,4 +1,5 @@
 import { normalizeNameKey, sql } from '../../../src/lib/db'
+import { PUBLIC_BOARD_SQL, toPublicEntry, type PublicBoardRow } from '../../../src/lib/publicBoard'
 
 export const dynamic = 'force-dynamic'
 
@@ -69,47 +70,21 @@ export async function POST(request: Request) {
       }
     }
 
-    const playerId = players[0]!.id
-    const inserted = await sql<{ id: string; created_at: string }>(
+    const dbPlayerId = players[0]!.id
+    const inserted = await sql<{ id: string }>(
       `insert into scores (player_id, score, correct, total, percent, best_streak, rank_label)
        values ($1::bigint, $2, $3, $4, $5, $6, $7)
-       returning id::text as id, created_at::text as created_at`,
-      [playerId, score, correct, total, percent, bestStreak, rank],
+       returning id::text as id`,
+      [dbPlayerId, score, correct, total, percent, bestStreak, rank],
     )
 
-    const board = await sql<{
-      id: string
-      name: string
-      score: number
-      correct: number
-      total: number
-      percent: number
-      best_streak: number
-      rank_label: string
-      created_at: string
-    }>(
-      `select s.id::text as id, p.name, s.score, s.correct, s.total, s.percent,
-              s.best_streak, s.rank_label, s.created_at::text as created_at
-       from scores s
-       join players p on p.id = s.player_id
-       order by s.score desc, s.percent desc, s.created_at asc
-       limit 30`,
-    )
+    const board = await sql<PublicBoardRow>(PUBLIC_BOARD_SQL)
 
+    // Public board only — never echo player tokens (caller already has their own locally).
     return Response.json({
       ok: true,
       entryId: inserted[0]?.id,
-      entries: board.map((r) => ({
-        id: r.id,
-        name: r.name,
-        score: r.score,
-        correct: r.correct,
-        total: r.total,
-        percent: r.percent,
-        bestStreak: r.best_streak,
-        rank: r.rank_label,
-        at: Date.parse(r.created_at) || Date.now(),
-      })),
+      entries: board.map(toPublicEntry),
     })
   } catch (error) {
     console.error('scores POST failed', error instanceof Error ? error.message : 'error')

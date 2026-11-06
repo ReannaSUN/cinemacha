@@ -3,6 +3,7 @@ import { apiFetchLeaderboard, apiSubmitScore } from './api'
 export interface LeaderboardEntry {
   id: string
   name: string
+  /** Local-only ownership hint; never sourced from public cloud APIs. */
   playerId?: string
   score: number
   correct: number

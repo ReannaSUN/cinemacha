@@ -35,6 +35,7 @@ export async function POST(request: Request) {
           row.id,
         ])
       }
+      // Token stays client-local; do not echo it back.
       return Response.json({ ok: true, name: row.name })
     }
 
