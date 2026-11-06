@@ -1,0 +1,1059 @@
+.lang-switch {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: flex-end;
+  margin-bottom: 0.65rem;
+}
+
+.lang-btn {
+  border: 3px solid #fff;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.82rem;
+  padding: 0.4rem 0.65rem;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.14);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+
+.lang-btn:hover {
+  transform: translateY(-2px);
+}
+
+.lang-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.14);
+}
+
+.lang-btn.is-active {
+  background: var(--lego-yellow);
+  box-shadow: 0 4px 0 #c9a800;
+}
+
+/* —— floating lego —— */
+.lego-float {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.brick {
+  position: absolute;
+  display: block;
+  height: 28px;
+  border-radius: 4px;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.22), inset 0 2px 0 rgba(255, 255, 255, 0.35);
+  animation: float-brick 4.5s ease-in-out infinite;
+}
+
+.brick::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background-image: radial-gradient(circle, currentColor 0 5px, transparent 6px);
+  background-size: 16px 12px;
+  background-repeat: repeat-x;
+  background-position: center top;
+  filter: brightness(1.08);
+  opacity: 0.95;
+}
+
+.brick-y {
+  width: 44px;
+  background: var(--lego-yellow);
+  color: #e6c200;
+  animation-delay: 0s;
+}
+.brick-b {
+  width: 44px;
+  background: var(--lego-blue);
+  color: #0047a0;
+  animation-delay: 0.6s;
+}
+.brick-g {
+  width: 60px;
+  background: var(--lego-green);
+  color: #006f24;
+  animation-delay: 1.1s;
+}
+.brick-r {
+  width: 44px;
+  background: var(--lego-red);
+  color: #b00e10;
+  animation-delay: 1.7s;
+}
+.brick-p {
+  width: 28px;
+  background: var(--pink);
+  color: #e01870;
+  animation-delay: 0.3s;
+}
+
+.hero {
+  position: relative;
+  z-index: 1;
+  min-height: calc(100dvh - 3.5rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 0 1.2rem;
+  gap: 0.55rem;
+}
+
+.hero-visual {
+  position: relative;
+  margin: 0 -0.25rem 0.55rem;
+  min-height: min(42vh, 360px);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--brick-shadow);
+  border: 4px solid #fff;
+  background: #1a0a12;
+}
+
+.hero-visual::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 14px;
+  z-index: 2;
+  pointer-events: none;
+  background-image: radial-gradient(circle, #ff2f92 0 5px, transparent 6px);
+  background-size: 22px 14px;
+  background-repeat: repeat-x;
+  background-position: 8px -2px;
+  opacity: 0.9;
+}
+
+.hero-poster {
+  width: 100%;
+  height: 100%;
+  min-height: min(42vh, 360px);
+  object-fit: contain;
+  object-position: center center;
+  display: block;
+  background: #1a0a12;
+}
+
+.marquee {
+  width: 100%;
+  overflow: hidden;
+  margin: 0 0 0.75rem;
+  padding: 0.7rem 0;
+  border-radius: 8px;
+  background: var(--lego-yellow);
+  color: #1c1c1c;
+  border: 3px solid #fff;
+  box-shadow: 0 6px 0 #c9a800;
+  position: relative;
+}
+
+.marquee::before,
+.marquee::after {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: 10px;
+  right: 10px;
+  height: 10px;
+  background-image: radial-gradient(circle, #f5d000 0 5px, transparent 6px);
+  background-size: 18px 10px;
+  background-repeat: repeat-x;
+  pointer-events: none;
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-slide 28s linear infinite;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.marquee-track span {
+  padding-right: 1.5rem;
+}
+
+@keyframes marquee-slide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.hero-kicker {
+  margin: 0;
+  font-family: var(--font-display);
+  letter-spacing: 0.08em;
+  font-size: 0.92rem;
+  color: var(--lego-blue);
+  font-weight: 700;
+}
+
+.hero-brand {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.85rem, 7.2vw, 2.85rem);
+  line-height: 1.15;
+  color: var(--pink-deep);
+  text-shadow: 4px 4px 0 var(--lego-yellow);
+  animation: stud-bounce 2.8s ease-in-out infinite;
+}
+
+.hero-headline {
+  margin: 0.15rem 0 0;
+  font-size: clamp(1.1rem, 3.8vw, 1.4rem);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.hero-sub {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.hero-cta {
+  margin-top: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.55rem;
+  width: 100%;
+}
+
+.hero-cta-row {
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0.55rem;
+}
+
+.hero-cta-row .btn-primary,
+.hero-cta-row .btn-ghost {
+  flex: 1;
+  text-align: center;
+  padding: 0.95rem 0.55rem;
+  font-size: 0.92rem;
+  white-space: nowrap;
+}
+
+.hero-meta {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.name-form {
+  margin-top: 0.85rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.name-label {
+  font-weight: 700;
+  color: var(--pink-deep);
+  font-size: 0.92rem;
+}
+
+.name-input {
+  width: 100%;
+  border: 3px solid #fff;
+  border-radius: 14px;
+  padding: 0.95rem 1rem;
+  background: #fff;
+  color: var(--ink);
+  font-size: 1.05rem;
+  font-weight: 700;
+  outline: none;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.12);
+  transition: box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.name-input:focus {
+  box-shadow: 0 6px 0 var(--lego-blue);
+}
+
+.name-input.is-error {
+  background: #fff0f0;
+  border-color: #ffb3b3;
+  box-shadow: 0 6px 0 var(--lego-red);
+  animation: wiggle 0.35s ease;
+}
+
+.name-input::placeholder {
+  color: #b0a0a8;
+  font-weight: 500;
+}
+
+.name-hint {
+  margin: 0;
+  color: var(--bad);
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 0.45rem 0.65rem;
+  background: #ffe4e4;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  box-shadow: 0 3px 0 var(--lego-red);
+}
+
+.name-hint.is-taken {
+  animation: combo-flash 0.35s ease;
+}
+
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  animation: none;
+  transform: none;
+}
+
+/* brick buttons */
+.btn-primary,
+.btn-ghost {
+  position: relative;
+  border: 3px solid #fff;
+  border-radius: 8px;
+  padding: 0.95rem 1.35rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.btn-primary {
+  background: var(--pink);
+  color: #fff;
+  box-shadow: 0 8px 0 #b01058;
+  animation: pulse-cta 1.8s ease-in-out infinite;
+}
+
+.btn-primary::before,
+.btn-ghost::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 12%;
+  right: 12%;
+  height: 10px;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0 4px, transparent 5px);
+  background-size: 16px 10px;
+  background-repeat: repeat-x;
+  pointer-events: none;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+}
+
+.btn-primary:active {
+  transform: translateY(5px);
+  box-shadow: 0 3px 0 #b01058;
+  animation: none;
+}
+
+.btn-ghost {
+  background: var(--lego-blue);
+  color: #fff;
+  box-shadow: 0 8px 0 #003d8a;
+  animation: none;
+}
+
+.btn-ghost:hover {
+  transform: translateY(-2px);
+}
+
+.btn-ghost:active {
+  transform: translateY(5px);
+  box-shadow: 0 3px 0 #003d8a;
+}
+
+.btn-ghost:disabled,
+.btn-primary:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+/* —— quiz HUD —— */
+.quiz {
+  position: relative;
+  z-index: 1;
+  padding-top: 0.35rem;
+}
+
+.quiz.is-shake {
+  animation: wiggle 0.4s ease;
+}
+
+.quiz.is-ok .quiz-score {
+  animation: score-pop 0.45s ease;
+}
+
+.quiz-top {
+  display: grid;
+  gap: 0.55rem;
+  margin-bottom: 0.9rem;
+  padding: 0.85rem;
+  background: #fff;
+  border: 3px solid #fff;
+  border-radius: 10px;
+  box-shadow: var(--brick-shadow);
+}
+
+.quiz-progress {
+  height: 16px;
+  background: #efe6ea;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 2px solid #ddd0d6;
+  position: relative;
+}
+
+.quiz-progress > span {
+  display: block;
+  height: 100%;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      var(--lego-yellow) 0 14px,
+      var(--pink) 14px 28px,
+      var(--lego-blue) 28px 42px,
+      var(--lego-green) 42px 56px
+    );
+  background-size: 56px 100%;
+  transition: width 0.35s cubic-bezier(0.2, 0.9, 0.2, 1.2);
+}
+
+.quiz-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.quiz-score {
+  color: var(--pink-deep);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  background: var(--lego-yellow);
+  border: 2px solid #fff;
+  border-radius: 6px;
+  padding: 0.15rem 0.55rem;
+  box-shadow: 0 3px 0 #c9a800;
+}
+
+.quiz-timer {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  color: #fff;
+  background: var(--lego-blue);
+  border: 2px solid #fff;
+  border-radius: 6px;
+  min-width: 3.2rem;
+  text-align: center;
+  padding: 0.15rem 0.45rem;
+  box-shadow: 0 3px 0 #003d8a;
+}
+
+.quiz-timer.is-urgent {
+  background: var(--lego-red);
+  box-shadow: 0 3px 0 #8f0b0d;
+  animation: pulse-cta 0.5s ease infinite;
+}
+
+.quiz-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.quiz-tags span {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--pink);
+  border: 2px solid #fff;
+  border-radius: 6px;
+  padding: 0.2rem 0.55rem;
+  box-shadow: 0 3px 0 #b01058;
+}
+
+.quiz-tags .streak {
+  background: var(--lego-orange);
+  box-shadow: 0 3px 0 #c66a10;
+  animation: combo-flash 0.45s ease both;
+}
+
+.quiz-react {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 3px solid #fff;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.18);
+  margin-bottom: 0.5rem;
+  animation: score-pop 0.4s ease both;
+}
+
+.quiz-burst {
+  position: absolute;
+  left: 50%;
+  top: 30%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--lego-green);
+  text-shadow: 3px 3px 0 #fff;
+  pointer-events: none;
+  animation: confetti-burst 0.7s ease forwards;
+  z-index: 3;
+}
+
+.quiz-burst.is-bad {
+  color: var(--lego-red);
+}
+
+.quiz-prompt {
+  margin: 0 0 1rem;
+  font-size: clamp(1.15rem, 4.2vw, 1.45rem);
+  line-height: 1.45;
+  font-weight: 700;
+  padding: 0.85rem 1rem;
+  background: #fff;
+  border: 3px solid #fff;
+  border-radius: 10px;
+  box-shadow: var(--brick-shadow);
+  animation: brick-drop 0.4s ease both;
+}
+
+.short-form {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.short-input {
+  width: 100%;
+  border: 3px solid #fff;
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.14);
+  outline: none;
+}
+
+.short-input:focus {
+  box-shadow: 0 6px 0 var(--lego-blue);
+}
+
+.short-input.is-correct {
+  background: #d9f5e4;
+  box-shadow: 0 6px 0 var(--lego-green);
+}
+
+.short-input.is-wrong {
+  background: #ffe0e0;
+  box-shadow: 0 6px 0 var(--lego-red);
+}
+
+.short-submit {
+  width: 100%;
+}
+
+.quiz-options {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.opt {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
+  align-items: start;
+  text-align: left;
+  width: 100%;
+  padding: 0.95rem 1rem;
+  border-radius: 8px;
+  border: 3px solid #fff;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.14);
+  font-weight: 700;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  animation: brick-drop 0.45s ease both;
+}
+
+.opt:nth-child(1) {
+  animation-delay: 0.02s;
+}
+.opt:nth-child(2) {
+  animation-delay: 0.06s;
+}
+.opt:nth-child(3) {
+  animation-delay: 0.1s;
+}
+.opt:nth-child(4) {
+  animation-delay: 0.14s;
+}
+
+.opt:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 9px 0 rgba(0, 0, 0, 0.16);
+}
+
+.opt:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.16);
+}
+
+.opt:disabled {
+  cursor: default;
+}
+
+.opt-key {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: #fff;
+  line-height: 1.2;
+  font-weight: 700;
+  background: var(--lego-blue);
+  border-radius: 5px;
+  min-width: 1.6rem;
+  text-align: center;
+  padding: 0.1rem 0.35rem;
+  box-shadow: 0 2px 0 #003d8a;
+}
+
+.opt.is-correct {
+  background: #d9f5e4;
+  box-shadow: 0 6px 0 var(--lego-green);
+  animation: score-pop 0.35s ease;
+}
+
+.opt.is-correct .opt-key {
+  background: var(--lego-green);
+  box-shadow: 0 2px 0 #006f24;
+}
+
+.opt.is-wrong {
+  background: #ffe0e0;
+  box-shadow: 0 6px 0 var(--lego-red);
+  animation: wiggle 0.35s ease;
+}
+
+.opt.is-wrong .opt-key {
+  background: var(--lego-red);
+  box-shadow: 0 2px 0 #8f0b0d;
+}
+
+.quiz-explain {
+  margin: 0.9rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  font-weight: 700;
+  padding: 0.85rem 0.95rem;
+  border-radius: 8px;
+  background: #fff;
+  border: 3px solid #fff;
+  box-shadow: var(--brick-shadow);
+  animation: brick-drop 0.35s ease both;
+}
+
+.quiz-explain.is-ok {
+  color: var(--lego-green);
+  box-shadow: 0 6px 0 var(--lego-green);
+}
+
+.quiz-explain.is-bad {
+  color: var(--lego-red);
+  box-shadow: 0 6px 0 var(--lego-red);
+}
+
+.quiz-nav {
+  display: flex;
+  gap: 0.55rem;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.quiz-nav-btn {
+  flex: 1;
+  text-align: center;
+  padding: 0.75rem 0.5rem;
+  font-size: 0.9rem;
+  background: #fff !important;
+  color: var(--ink) !important;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.12) !important;
+}
+
+.quiz-nav-btn::before {
+  display: none;
+}
+
+.quiz-nav-btn:active {
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.12) !important;
+}
+
+/* —— result / board —— */
+.result,
+.board {
+  position: relative;
+  z-index: 1;
+  padding-top: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  align-items: flex-start;
+}
+
+.result-photo {
+  width: min(100%, 320px);
+  height: auto;
+  max-height: 220px;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 12px;
+  border: 4px solid #fff;
+  box-shadow: var(--brick-shadow);
+  animation: brick-drop 0.5s ease both;
+  background: #fff;
+}
+
+.result-kicker,
+.board-kicker {
+  margin: 0.3rem 0 0;
+  font-family: var(--font-display);
+  color: var(--lego-blue);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+}
+
+.result-title,
+.board-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 7vw, 2.6rem);
+  font-weight: 700;
+  color: var(--pink-deep);
+  text-shadow: 4px 4px 0 var(--lego-yellow);
+}
+
+.result-score {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+}
+
+.result-num {
+  font-family: var(--font-display);
+  font-size: clamp(3.2rem, 14vw, 4.8rem);
+  line-height: 0.9;
+  color: var(--pink-deep);
+  text-shadow: 4px 4px 0 var(--lego-yellow);
+  animation: score-pop 0.55s ease both;
+}
+
+.result-unit {
+  font-size: 1.15rem;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.result-percent-line {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 4.5vw, 1.6rem);
+  font-weight: 700;
+  color: var(--lego-blue);
+  animation: combo-flash 0.5s ease both;
+}
+
+.result-grid {
+  list-style: none;
+  margin: 0.35rem 0 0;
+  padding: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.result-grid li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.75rem;
+  background: #fff;
+  border-radius: 8px;
+  border: 3px solid #fff;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.14);
+}
+
+.result-grid li:nth-child(1) {
+  box-shadow: 0 5px 0 var(--lego-yellow);
+}
+.result-grid li:nth-child(2) {
+  box-shadow: 0 5px 0 var(--pink);
+}
+.result-grid li:nth-child(3) {
+  box-shadow: 0 5px 0 var(--lego-blue);
+}
+
+.result-grid strong {
+  font-size: 1.1rem;
+  font-family: var(--font-display);
+}
+
+.result-grid span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.share-preview {
+  margin: 0.35rem 0 0;
+  width: 100%;
+  padding: 0.95rem;
+  white-space: pre-wrap;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--muted);
+  background: #fff;
+  border: 3px solid #fff;
+  border-radius: 10px;
+  box-shadow: var(--brick-shadow);
+}
+
+.badge-preview {
+  width: 100%;
+  max-width: 360px;
+  border-radius: 12px;
+  border: 4px solid #fff;
+  box-shadow: var(--brick-shadow);
+  display: block;
+  animation: brick-drop 0.45s ease both;
+}
+
+.share-social {
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0.95rem;
+  background: #fff;
+  border: 3px solid #fff;
+  border-radius: 12px;
+  box-shadow: var(--brick-shadow);
+  display: grid;
+  gap: 0.55rem;
+}
+
+.share-social-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.share-social-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.share-social-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.share-soc-btn {
+  appearance: none;
+  border: 3px solid #fff;
+  border-radius: 10px;
+  padding: 0.75rem 0.4rem;
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.16);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.share-soc-btn:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.16);
+}
+
+.share-soc-btn:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.share-soc-threads {
+  background: #111;
+}
+
+.share-soc-ig {
+  background: linear-gradient(135deg, #f58529, #dd2a7b 45%, #8134af);
+}
+
+.share-soc-fb {
+  background: #1877f2;
+}
+
+.share-soc-wa {
+  background: #25d366;
+  color: #073b1a;
+}
+
+.share-social-note {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--lego-blue);
+}
+
+.result-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-top: 0.4rem;
+  width: 100%;
+}
+
+.board-sub,
+.board-empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.board-list {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+  width: 100%;
+}
+
+.board-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.65rem;
+  align-items: center;
+  padding: 0.85rem 1rem;
+  background: #fff;
+  border: 3px solid #fff;
+  border-radius: 8px;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.14);
+  animation: brick-drop 0.4s ease both;
+}
+
+.board-row.is-top {
+  box-shadow: 0 5px 0 var(--lego-yellow);
+  background: #fff9d6;
+}
+
+.board-row.is-me {
+  box-shadow: 0 5px 0 var(--pink);
+  background: #ffe8f3;
+}
+
+.board-rank {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--pink-deep);
+}
+
+.board-name {
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.board-score {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.site-foot {
+  position: relative;
+  z-index: 1;
+  margin-top: 2rem;
+  padding-top: 0.9rem;
+  border-top: 4px solid #fff;
+  box-shadow: inset 0 4px 0 rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+@media (min-width: 720px) {
+  .hero {
+    justify-content: center;
+    padding-top: 1rem;
+  }
+
+  .result-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .lego-float .brick {
+    transform: scale(1.15);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-rise,
+  .brick,
+  .hero-brand,
+  .btn-primary,
+  .marquee-track,
+  .opt,
+  .quiz-burst,
+  .quiz-tags .streak {
+    animation: none !important;
+  }
+}

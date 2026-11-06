@@ -1,0 +1,209 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@450;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+
+:root {
+  /* Lego + Chachafai */
+  --lego-red: #d01012;
+  --lego-yellow: #f5d000;
+  --lego-blue: #0055bf;
+  --lego-green: #00852b;
+  --lego-orange: #fe8a18;
+  --pink: #ff2f92;
+  --pink-deep: #e01870;
+  --blush: #ffc2de;
+  --bg: #ffe4f0;
+  --bg-2: #ffd6ea;
+  --ink: #1c1c1c;
+  --muted: #6b5a62;
+  --card: #ffffff;
+  --ok: #00852b;
+  --bad: #d01012;
+  --yellow: var(--lego-yellow);
+  --font-display: 'Fredoka', 'Noto Sans TC', sans-serif;
+  --font-body: 'Noto Sans TC', 'PingFang HK', sans-serif;
+  --radius: 10px;
+  --brick-shadow: 0 8px 0 rgba(0, 0, 0, 0.18);
+  --stud: radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.05) 45%, transparent 60%);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-body);
+  background: #ffdceb;
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* soft pink polka / stud grid (matches ref) */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.7;
+  background-color: #ffe4f0;
+  background-image: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.85) 0 10px,
+    transparent 11px
+  );
+  background-size: 36px 36px;
+  background-position: 0 0;
+}
+
+/* keep page tint pink; light brick glows only */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 10% 12%, rgba(255, 255, 255, 0.35), transparent 18%),
+    radial-gradient(circle at 90% 80%, rgba(255, 120, 180, 0.2), transparent 22%);
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.app-shell {
+  position: relative;
+  z-index: 1;
+  min-height: 100dvh;
+  width: min(720px, 100%);
+  margin: 0 auto;
+  padding: 1rem 1rem 2.2rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+@keyframes brick-drop {
+  0% {
+    opacity: 0;
+    transform: translateY(-28px) scale(1.04) rotate(-1deg);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(4px) scale(0.99) rotate(0.5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0);
+  }
+}
+
+@keyframes stud-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-7px);
+  }
+  70% {
+    transform: translateY(2px);
+  }
+}
+
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2.5deg);
+  }
+}
+
+@keyframes pulse-cta {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes score-pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes combo-flash {
+  0% {
+    transform: scale(0.8) rotate(-6deg);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1.15) rotate(3deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+@keyframes float-brick {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-6deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(4deg);
+  }
+}
+
+@keyframes confetti-burst {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+}
+
+.anim-rise {
+  animation: brick-drop 0.55s cubic-bezier(0.2, 0.9, 0.25, 1.15) both;
+}
