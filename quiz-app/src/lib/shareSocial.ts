@@ -8,7 +8,8 @@ export const LIVE_QUIZ_URL = 'https://cheungkafai-quiz.apps.grok.bot'
  * Prefer VITE_PUBLIC_SHARE_URL override, else the live hosted URL.
  */
 export function quizShareUrl(): string {
-  const fromEnv = (import.meta.env.VITE_PUBLIC_SHARE_URL as string | undefined)?.trim()
+  const fromEnv =
+    (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_SHARE_URL?.trim()) || ''
   if (fromEnv) return fromEnv.replace(/\/$/, '')
   return LIVE_QUIZ_URL
 }

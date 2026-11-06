@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Hero } from './components/Hero'
 import { LangSwitch } from './components/LangSwitch'
 import { Leaderboard } from './components/Leaderboard'
@@ -19,8 +19,14 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>('home')
   const [seed, setSeed] = useState(0)
   const [stats, setStats] = useState<RoundStats | null>(null)
-  const [name, setName] = useState(() => localStorage.getItem(NAME_KEY) ?? '')
+  const [name, setName] = useState('')
   const [highlightId, setHighlightId] = useState<string | undefined>()
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    setName(localStorage.getItem(NAME_KEY) ?? '')
+    setReady(true)
+  }, [])
 
   const round = useMemo(() => pickRound(ROUND_SIZE), [seed])
 
@@ -36,6 +42,10 @@ export default function App() {
   function finish(next: RoundStats) {
     setStats(next)
     setScreen('result')
+  }
+
+  if (!ready) {
+    return <div className="app-shell" aria-busy="true" />
   }
 
   return (

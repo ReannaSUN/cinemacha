@@ -1,8 +1,9 @@
 /**
  * Nickname registry — unique nicknames bound to playerId.
- * Cross-checks players table + leaderboard rows owned by others.
+ * Prefers cloud API when available; falls back to localStorage.
  */
 
+import { apiCheckNickname, apiClaimNickname } from './api'
 import { getLeaderboard } from './leaderboard'
 
 const PLAYERS_KEY = 'zjh-players-db'
@@ -61,8 +62,7 @@ function takenKeysByOthers(me: string): Set<string> {
   return taken
 }
 
-/** Live / submit check. Same device player may keep their own nickname. */
-export function checkNickname(raw: string): NameCheck {
+export function checkNicknameLocal(raw: string): NameCheck {
   const name = raw.trim().replace(/\s+/g, ' ')
   if (!name) return { ok: false, reason: 'empty' }
   if ([...name].length > 12) return { ok: false, reason: 'too_long' }
@@ -77,15 +77,26 @@ export function checkNickname(raw: string): NameCheck {
   return { ok: true, name }
 }
 
-/** Claim nickname after validation (unique in registry). */
-export function claimNickname(raw: string): NameCheck {
-  const checked = checkNickname(raw)
+/** Live / submit check. Cloud first, then local. */
+export function checkNickname(raw: string): NameCheck {
+  return checkNicknameLocal(raw)
+}
+
+export async function checkNicknameAsync(raw: string): Promise<NameCheck> {
+  const local = checkNicknameLocal(raw)
+  if (!local.ok && local.reason !== 'taken') return local
+  const remote = await apiCheckNickname(raw)
+  if (remote) return remote
+  return local
+}
+
+export function claimNicknameLocal(raw: string): NameCheck {
+  const checked = checkNicknameLocal(raw)
   if (!checked.ok) return checked
 
   const me = getPlayerId()
   const key = normalize(checked.name)
   const rows = readPlayers().filter((p) => p.playerId !== me && p.nameKey !== key)
-  // Ensure no one else holds this key
   if (rows.some((p) => p.nameKey === key)) return { ok: false, reason: 'taken' }
 
   rows.push({
@@ -96,6 +107,19 @@ export function claimNickname(raw: string): NameCheck {
   })
   writePlayers(rows)
   return checked
+}
+
+export function claimNickname(raw: string): NameCheck {
+  return claimNicknameLocal(raw)
+}
+
+export async function claimNicknameAsync(raw: string): Promise<NameCheck> {
+  const remote = await apiClaimNickname(raw)
+  if (remote) {
+    if (remote.ok) claimNicknameLocal(remote.name)
+    return remote
+  }
+  return claimNicknameLocal(raw)
 }
 
 export function listClaimedNames(): string[] {

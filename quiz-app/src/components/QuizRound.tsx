@@ -3,6 +3,7 @@ import memeFace from '../assets/photos/meme-face.png'
 import type { Question } from '../data/questions'
 import { useI18n } from '../i18n/I18nProvider'
 import { localizeQuestion } from '../i18n/questionLocale'
+import { assetUrl } from '../lib/assetUrl'
 import { SECONDS_PER_Q, pointsForAnswer } from '../lib/scoring'
 
 export interface RoundStats {
@@ -116,7 +117,7 @@ export function QuizRound({ questions, onFinish, onHome, onRestart }: QuizRoundP
         </div>
       </header>
 
-      {feedback === 'ok' ? <img className="quiz-react" src={memeFace} alt="" /> : null}
+      {feedback === 'ok' ? <img className="quiz-react" src={assetUrl(memeFace)} alt="" /> : null}
       {feedback === 'ok' && gainFlash != null ? (
         <div className="quiz-burst">+{gainFlash}</div>
       ) : null}

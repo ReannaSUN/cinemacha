@@ -1,6 +1,7 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -23,13 +24,18 @@ interface I18nValue {
 const I18nContext = createContext<I18nValue | null>(null)
 
 function readLocale(): Locale {
+  if (typeof window === 'undefined') return 'zh-Hant'
   const saved = localStorage.getItem(LOCALE_KEY)
   if (saved === 'zh-Hant' || saved === 'zh-Hans' || saved === 'en' || saved === 'ja') return saved
   return 'zh-Hant'
 }
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(readLocale)
+  const [locale, setLocaleState] = useState<Locale>('zh-Hant')
+
+  useEffect(() => {
+    setLocaleState(readLocale())
+  }, [])
 
   function setLocale(l: Locale) {
     setLocaleState(l)

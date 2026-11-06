@@ -1,3 +1,5 @@
+import { apiFetchLeaderboard, apiSubmitScore } from './api'
+
 export interface LeaderboardEntry {
   id: string
   name: string
@@ -25,6 +27,10 @@ function readRaw(): LeaderboardEntry[] {
   }
 }
 
+function writeRaw(list: LeaderboardEntry[]) {
+  localStorage.setItem(KEY, JSON.stringify(list.slice(0, MAX)))
+}
+
 export function getLeaderboard(): LeaderboardEntry[] {
   return readRaw().sort((a, b) => b.score - a.score || b.percent - a.percent || a.at - b.at)
 }
@@ -38,6 +44,27 @@ export function submitScore(entry: Omit<LeaderboardEntry, 'id' | 'at'>): Leaderb
   const list = [...readRaw(), next]
     .sort((a, b) => b.score - a.score || b.percent - a.percent || a.at - b.at)
     .slice(0, MAX)
-  localStorage.setItem(KEY, JSON.stringify(list))
+  writeRaw(list)
   return list
+}
+
+export async function fetchLeaderboardAsync(): Promise<LeaderboardEntry[]> {
+  const remote = await apiFetchLeaderboard()
+  if (remote) {
+    writeRaw(remote)
+    return remote
+  }
+  return getLeaderboard()
+}
+
+export async function submitScoreAsync(
+  entry: Omit<LeaderboardEntry, 'id' | 'at'>,
+): Promise<{ list: LeaderboardEntry[]; entryId: string | null }> {
+  const remote = await apiSubmitScore(entry)
+  if (remote) {
+    writeRaw(remote.entries)
+    return { list: remote.entries, entryId: remote.entryId ?? null }
+  }
+  const list = submitScore(entry)
+  return { list, entryId: list[0]?.id ?? null }
 }

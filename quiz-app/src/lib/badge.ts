@@ -1,4 +1,7 @@
-import memeFaceUrl from '../assets/photos/meme-face.png'
+import memeFaceMod from '../assets/photos/meme-face.png'
+import { assetUrl } from './assetUrl'
+
+const memeFaceUrl = assetUrl(memeFaceMod)
 
 export interface BadgeInput {
   name: string

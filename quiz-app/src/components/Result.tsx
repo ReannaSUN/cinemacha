@@ -2,8 +2,9 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import bokTau from '../assets/photos/bok-tau.png'
 import memeFace from '../assets/photos/meme-face.png'
 import { useI18n } from '../i18n/I18nProvider'
+import { assetUrl } from '../lib/assetUrl'
 import { downloadBlob, generateBadgeBlob } from '../lib/badge'
-import { submitScore } from '../lib/leaderboard'
+import { submitScoreAsync } from '../lib/leaderboard'
 import { getPlayerId } from '../lib/nameDb'
 import {
   buildShareText,
@@ -61,7 +62,8 @@ export function Result({ name, stats, total, onRetry, onHome, onOpenBoard }: Res
   const happy = stats.correct >= total / 2
 
   useEffect(() => {
-    const list = submitScore({
+    let alive = true
+    void submitScoreAsync({
       name,
       playerId: getPlayerId(),
       score: stats.score,
@@ -70,15 +72,24 @@ export function Result({ name, stats, total, onRetry, onHome, onOpenBoard }: Res
       percent,
       bestStreak: stats.bestStreak,
       rank,
+    }).then(({ list, entryId: id }) => {
+      if (!alive) return
+      if (id) {
+        setEntryId(id)
+        return
+      }
+      const mine = list.find(
+        (e) =>
+          e.name === name &&
+          e.score === stats.score &&
+          e.correct === stats.correct &&
+          e.percent === percent,
+      )
+      setEntryId(mine?.id ?? null)
     })
-    const mine = list.find(
-      (e) =>
-        e.name === name &&
-        e.score === stats.score &&
-        e.correct === stats.correct &&
-        e.percent === percent,
-    )
-    setEntryId(mine?.id ?? null)
+    return () => {
+      alive = false
+    }
   }, [name, stats, total, percent, rank])
 
   useEffect(() => {
@@ -182,7 +193,7 @@ export function Result({ name, stats, total, onRetry, onHome, onOpenBoard }: Res
 
   return (
     <section className="result anim-rise" aria-labelledby="result-title">
-      <img className="result-photo" src={happy ? memeFace : bokTau} alt="" />
+      <img className="result-photo" src={assetUrl(happy ? memeFace : bokTau)} alt="" />
       <p className="result-kicker">
         {name} · {happy ? t('resultHappy') : t('resultRetryMood')}
       </p>

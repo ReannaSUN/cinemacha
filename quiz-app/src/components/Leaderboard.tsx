@@ -1,6 +1,6 @@
-import { useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import { useI18n } from '../i18n/I18nProvider'
-import { getLeaderboard } from '../lib/leaderboard'
+import { fetchLeaderboardAsync, type LeaderboardEntry } from '../lib/leaderboard'
 
 interface LeaderboardProps {
   highlightId?: string
@@ -10,7 +10,21 @@ interface LeaderboardProps {
 
 export function Leaderboard({ highlightId, onBack, onPlay }: LeaderboardProps) {
   const { t } = useI18n()
-  const rows = useMemo(() => getLeaderboard(), [highlightId])
+  const [rows, setRows] = useState<LeaderboardEntry[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let alive = true
+    setLoading(true)
+    void fetchLeaderboardAsync().then((list) => {
+      if (!alive) return
+      setRows(list)
+      setLoading(false)
+    })
+    return () => {
+      alive = false
+    }
+  }, [highlightId])
 
   return (
     <section className="board anim-rise" aria-labelledby="board-title">
@@ -20,7 +34,9 @@ export function Leaderboard({ highlightId, onBack, onPlay }: LeaderboardProps) {
       </h2>
       <p className="board-sub">{t('boardSub')}</p>
 
-      {rows.length === 0 ? (
+      {loading ? (
+        <p className="board-empty">{t('boardLoading')}</p>
+      ) : rows.length === 0 ? (
         <p className="board-empty">{t('boardEmpty')}</p>
       ) : (
         <ol className="board-list">
