@@ -42,10 +42,21 @@ export function Result({ name, stats, total, onRetry, onHome, onOpenBoard }: Res
     () => rankLabel(stats.score, maxScoreEstimate(total)),
     [stats.score, total],
   )
+  const challengeUrl = quizShareUrl()
   const shareText = useMemo(
     () =>
-      buildShareText(name, stats.score, stats.correct, total, stats.bestStreak, rank, percent, locale),
-    [name, stats, total, rank, percent, locale],
+      buildShareText(
+        name,
+        stats.score,
+        stats.correct,
+        total,
+        stats.bestStreak,
+        rank,
+        percent,
+        locale,
+        challengeUrl,
+      ),
+    [name, stats, total, rank, percent, locale, challengeUrl],
   )
   const happy = stats.correct >= total / 2
 
@@ -103,7 +114,7 @@ export function Result({ name, stats, total, onRetry, onHome, onOpenBoard }: Res
   async function share() {
     try {
       if (navigator.share) {
-        await navigator.share({ title: t('brand'), text: shareText, url: quizShareUrl() })
+        await navigator.share({ title: t('brand'), text: shareText, url: challengeUrl })
         return
       }
     } catch {
@@ -140,7 +151,7 @@ export function Result({ name, stats, total, onRetry, onHome, onOpenBoard }: Res
         target,
         title: t('brand'),
         text: shareText,
-        url: quizShareUrl(),
+        url: challengeUrl,
         file,
         download: downloadBlob,
       })

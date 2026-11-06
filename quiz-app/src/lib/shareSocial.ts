@@ -1,8 +1,25 @@
 export type SocialTarget = 'threads' | 'instagram' | 'facebook' | 'whatsapp'
 
+/** Live public Cursor hosting URL — always use this in invite templates. */
+export const LIVE_QUIZ_URL = 'https://cheungkafai-quiz.apps.grok.bot'
+
+/**
+ * Challenge link for invites.
+ * Prefer VITE_PUBLIC_SHARE_URL override, else the live hosted URL.
+ */
 export function quizShareUrl(): string {
-  if (typeof window === 'undefined') return ''
-  return `${window.location.origin}${window.location.pathname}${window.location.search}`
+  const fromEnv = (import.meta.env.VITE_PUBLIC_SHARE_URL as string | undefined)?.trim()
+  if (fromEnv) return fromEnv.replace(/\/$/, '')
+  return LIVE_QUIZ_URL
+}
+
+/** Full caption already includes the link — use as-is for WhatsApp / Threads / clipboard. */
+export function invitePayload(text: string, url: string): string {
+  const body = text.trim()
+  const link = (url || LIVE_QUIZ_URL).trim()
+  if (!link) return body
+  if (body.includes(link)) return body
+  return `${body}\n${link}`
 }
 
 export function openWhatsApp(text: string) {
@@ -55,7 +72,8 @@ export async function tryNativeFileShare(opts: {
   file: File
 }): Promise<'shared' | 'cancelled' | 'unavailable'> {
   if (!navigator.share || !navigator.canShare) return 'unavailable'
-  const payloadWithFile = { title: opts.title, text: opts.text, url: opts.url, files: [opts.file] }
+  const caption = invitePayload(opts.text, opts.url)
+  const payloadWithFile = { title: opts.title, text: caption, url: opts.url, files: [opts.file] }
   try {
     if (navigator.canShare(payloadWithFile)) {
       await navigator.share(payloadWithFile)
@@ -65,7 +83,7 @@ export async function tryNativeFileShare(opts: {
     if (err instanceof DOMException && err.name === 'AbortError') return 'cancelled'
   }
 
-  const payloadText = { title: opts.title, text: `${opts.text}\n${opts.url}` }
+  const payloadText = { title: opts.title, text: caption, url: opts.url }
   try {
     if (navigator.canShare?.(payloadText) ?? true) {
       await navigator.share(payloadText)
@@ -86,30 +104,32 @@ export async function shareViaPlatform(opts: {
   file: File
   download: (blob: Blob, filename: string) => void
 }): Promise<'shared' | 'opened' | 'cancelled'> {
+  const caption = invitePayload(opts.text, opts.url)
+  const shareUrl = opts.url || LIVE_QUIZ_URL
   const native = await tryNativeFileShare({
     title: opts.title,
-    text: opts.text,
-    url: opts.url,
+    text: caption,
+    url: shareUrl,
     file: opts.file,
   })
   if (native === 'shared' || native === 'cancelled') return native
 
   opts.download(opts.file, opts.file.name)
-  await copyText(`${opts.text}\n${opts.url}`)
+  await copyText(caption)
 
   if (opts.target === 'whatsapp') {
-    openWhatsApp(`${opts.text}\n${opts.url}`)
+    openWhatsApp(caption)
     return 'opened'
   }
   if (opts.target === 'threads') {
-    openThreads(`${opts.text}\n${opts.url}`)
+    openThreads(caption)
     return 'opened'
   }
   if (opts.target === 'facebook') {
-    openFacebook(opts.url || window.location.href, opts.text)
+    openFacebook(shareUrl, caption)
     return 'opened'
   }
-  // Instagram has no web compose intent — open app/site with caption copied + image downloaded.
+  // Instagram: caption (+ live link) copied, badge downloaded, open IG to paste.
   openInstagram()
   return 'opened'
 }

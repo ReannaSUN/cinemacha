@@ -21,6 +21,7 @@ export function rankLabel(score: number, maxPossible: number): string {
   return '回憶重溫緊 🥹'
 }
 
+/** Invite template for WhatsApp / Instagram / Facebook / Threads — always include challenge link. */
 export function buildShareText(
   name: string,
   score: number,
@@ -30,39 +31,62 @@ export function buildShareText(
   rank: string,
   percent: number,
   locale: Locale = 'zh-Hant',
+  challengeUrl = '',
 ): string {
+  const link = challengeUrl.trim()
   if (locale === 'en') {
     return [
       '💕 Nick Cheung HK Classics Quiz | THE CHACHAFAI QUIZ',
-      `${name}: I got ${percent}% right — your turn?`,
-      `Score ${score} (${correct}/${total}) | Combo ×${bestStreak} | ${rank}`,
-      'Come challenge me — 15 questions, can you beat my score?',
+      '',
+      '【Challenge invite】',
+      `${name} scored ${percent}% (${score} pts · ${correct}/${total})`,
+      `Title: ${rank} · Best combo ×${bestStreak}`,
+      '',
+      'Come challenge me on 張家輝港產經典測驗 / THE CHACHAFAI QUIZ!',
+      '15 classic questions — can you beat my score?',
+      `👇 Play here:\n${link || 'https://cheungkafai-quiz.apps.grok.bot'}`,
+      '',
       '#Chachafai #NickCheung',
     ].join('\n')
   }
   if (locale === 'ja') {
     return [
       '💕 张家輝ホンコン經典クイズ | THE CHACHAFAI QUIZ',
-      `${name}：正解率 ${percent}% だよ、君は？`,
-      `スコア ${score}（${correct}/${total}）｜コンボ ×${bestStreak}｜${rank}`,
-      '僕に挑戦して！15問、このスコア超えられる？',
+      '',
+      '【挑戦招待】',
+      `${name}：正解率 ${percent}%（${score}点 · ${correct}/${total}）`,
+      `称号：${rank} · 最高コンボ ×${bestStreak}`,
+      '',
+      '張家輝港產經典測驗に挑戦して！15問、このスコア超えられる？',
+      `👇 ここから挑戦：\n${link || 'https://cheungkafai-quiz.apps.grok.bot'}`,
+      '',
       '#Chachafai #张家輝',
     ].join('\n')
   }
   if (locale === 'zh-Hans') {
     return [
       '💕 张家辉港产经典测验｜THE CHACHAFAI QUIZ',
-      `${name}：我答对了 ${percent}%，你呢？`,
-      `分数 ${score}（${correct}/${total}）｜连击 ×${bestStreak}｜${rank}`,
-      '来挑战我吧！15题，看你能不能超过我的分数！',
+      '',
+      '【挑战邀请】',
+      `${name}：答对了 ${percent}%（${score} 分 · ${correct}/${total}）`,
+      `头衔：${rank} · 最高连击 ×${bestStreak}`,
+      '',
+      '来挑战《张家辉港产经典测验》吧！15 题，看你能不能超过我～',
+      `👇 点开链接开打：\n${link || 'https://cheungkafai-quiz.apps.grok.bot'}`,
+      '',
       '#张家辉港产经典测验 #Chachafai',
     ].join('\n')
   }
   return [
     '💕 張家輝港產經典測驗｜THE CHACHAFAI QUIZ',
-    `${name}：我答對咗 ${percent}%，你呢？`,
-    `分數 ${score}（${correct}/${total}）｜連擊 ×${bestStreak}｜${rank}`,
-    '嚟挑戰我啦！15題，睇你可唔可以超過我嘅分數！',
+    '',
+    '【挑戰邀請】',
+    `${name}：答對咗 ${percent}%（${score} 分 · ${correct}/${total}）`,
+    `頭銜：${rank} · 最高連擊 ×${bestStreak}`,
+    '',
+    '嚟挑戰《張家輝港產經典測驗》啦！15 題港產經典，睇你可唔可以超過我～',
+    `👇 撳連結即刻開波：\n${link || 'https://cheungkafai-quiz.apps.grok.bot'}`,
+    '',
     '#張家輝港產經典測驗 #Chachafai #張家輝',
   ].join('\n')
 }
