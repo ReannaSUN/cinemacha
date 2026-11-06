@@ -23,7 +23,9 @@ export function invitePayload(text: string, url: string): string {
 }
 
 export function openWhatsApp(text: string) {
-  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer')
+  // api.whatsapp.com reliably pre-fills text+link on mobile & desktop
+  const href = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`
+  window.open(href, '_blank', 'noopener,noreferrer')
 }
 
 export function openThreads(text: string) {
@@ -35,7 +37,10 @@ export function openThreads(text: string) {
 }
 
 export function openFacebook(url: string, quote: string) {
-  const href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(quote)}`
+  // FB often strips `quote`; still pass it, and callers must clipboard the full caption.
+  const href =
+    `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}` +
+    `&quote=${encodeURIComponent(quote)}`
   window.open(href, '_blank', 'noopener,noreferrer')
 }
 
@@ -53,8 +58,9 @@ export async function copyText(text: string): Promise<boolean> {
       ta.value = text
       ta.setAttribute('readonly', '')
       ta.style.position = 'fixed'
-      ta.style.left = '-9999px'
+      ta.style.opacity = '0'
       document.body.appendChild(ta)
+      ta.focus()
       ta.select()
       const ok = document.execCommand('copy')
       document.body.removeChild(ta)
@@ -65,37 +71,11 @@ export async function copyText(text: string): Promise<boolean> {
   }
 }
 
-export async function tryNativeFileShare(opts: {
-  title: string
-  text: string
-  url: string
-  file: File
-}): Promise<'shared' | 'cancelled' | 'unavailable'> {
-  if (!navigator.share || !navigator.canShare) return 'unavailable'
-  const caption = invitePayload(opts.text, opts.url)
-  const payloadWithFile = { title: opts.title, text: caption, url: opts.url, files: [opts.file] }
-  try {
-    if (navigator.canShare(payloadWithFile)) {
-      await navigator.share(payloadWithFile)
-      return 'shared'
-    }
-  } catch (err) {
-    if (err instanceof DOMException && err.name === 'AbortError') return 'cancelled'
-  }
-
-  const payloadText = { title: opts.title, text: caption, url: opts.url }
-  try {
-    if (navigator.canShare?.(payloadText) ?? true) {
-      await navigator.share(payloadText)
-      return 'shared'
-    }
-  } catch (err) {
-    if (err instanceof DOMException && err.name === 'AbortError') return 'cancelled'
-  }
-  return 'unavailable'
-}
-
-/** Platform intents when Web Share API cannot attach the badge image. */
+/**
+ * Per-platform share. Do NOT use the generic Web Share sheet first —
+ * it often delivers only the badge image and drops invite text/link
+ * (WhatsApp / Instagram / Facebook). Threads intent already embeds text.
+ */
 export async function shareViaPlatform(opts: {
   target: SocialTarget
   title: string
@@ -103,19 +83,15 @@ export async function shareViaPlatform(opts: {
   url: string
   file: File
   download: (blob: Blob, filename: string) => void
-}): Promise<'shared' | 'opened' | 'cancelled'> {
-  const caption = invitePayload(opts.text, opts.url)
+}): Promise<'opened'> {
   const shareUrl = opts.url || LIVE_QUIZ_URL
-  const native = await tryNativeFileShare({
-    title: opts.title,
-    text: caption,
-    url: shareUrl,
-    file: opts.file,
-  })
-  if (native === 'shared' || native === 'cancelled') return native
+  const caption = invitePayload(opts.text, shareUrl)
 
-  opts.download(opts.file, opts.file.name)
+  // Always put template + live link on the clipboard first (user gesture).
   await copyText(caption)
+
+  // Badge for platforms that need manual attach (IG / FB / desktop WA).
+  opts.download(opts.file, opts.file.name)
 
   if (opts.target === 'whatsapp') {
     openWhatsApp(caption)
@@ -129,7 +105,7 @@ export async function shareViaPlatform(opts: {
     openFacebook(shareUrl, caption)
     return 'opened'
   }
-  // Instagram: caption (+ live link) copied, badge downloaded, open IG to paste.
+  // Instagram has no web compose with caption — paste from clipboard + attach badge.
   openInstagram()
   return 'opened'
 }

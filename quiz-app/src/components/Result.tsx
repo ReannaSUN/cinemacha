@@ -156,7 +156,15 @@ export function Result({ name, stats, total, onRetry, onHome, onOpenBoard }: Res
         download: downloadBlob,
       })
       if (result === 'opened') {
-        flashNote(target === 'instagram' ? t('shareIgHint') : t('shareOpened'))
+        const note =
+          target === 'instagram'
+            ? t('shareIgHint')
+            : target === 'whatsapp'
+              ? t('shareWaHint')
+              : target === 'facebook'
+                ? t('shareFbHint')
+                : t('shareOpened')
+        flashNote(note)
       }
     } catch {
       setBadgeError(t('badgeFail'))
